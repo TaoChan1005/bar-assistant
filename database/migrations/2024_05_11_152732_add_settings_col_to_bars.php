@@ -10,13 +10,8 @@ return new class () extends Migration {
      */
     public function up(): void
     {
-        Schema::create('exports', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('bar_id');
-            $table->string('filename');
-            $table->foreignId('created_user_id');
-            $table->boolean('is_done')->default(false);
-            $table->timestamps();
+        Schema::table('bars', function (Blueprint $table) {
+            $table->json('settings')->nullable();
         });
     }
 
@@ -25,6 +20,8 @@ return new class () extends Migration {
      */
     public function down(): void
     {
-        Schema::dropIfExists('exports');
+        Schema::table('bars', function (Blueprint $table) {
+            $table->dropColumn('settings');
+        });
     }
 };

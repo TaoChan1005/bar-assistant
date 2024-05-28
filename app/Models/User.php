@@ -16,7 +16,10 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class User extends Authenticatable implements MustVerifyEmail
 {
-    use HasApiTokens, HasFactory, Notifiable, Billable;
+    use HasApiTokens;
+    use HasFactory;
+    use Notifiable;
+    use Billable;
 
     /**
      * The attributes that are mass assignable.
@@ -95,7 +98,7 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function getBarMembership(int $barId): ?BarMembership
     {
-        return $this->memberships->where('bar_id', $barId)->first();
+        return $this->memberships()->where('bar_id', $barId)->first();
     }
 
     public function hasBarMembership(int $barId): bool

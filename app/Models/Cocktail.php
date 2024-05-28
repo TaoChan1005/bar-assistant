@@ -28,14 +28,14 @@ use Kami\Cocktail\Models\Collection as CocktailCollection;
 
 class Cocktail extends Model implements UploadableInterface
 {
-    use HasFactory,
-        Searchable,
-        HasImages,
-        HasSlug,
-        HasRating,
-        HasNotes,
-        HasBarAwareScope,
-        HasAuthors;
+    use HasFactory;
+    use Searchable;
+    use HasImages;
+    use HasSlug;
+    use HasRating;
+    use HasNotes;
+    use HasBarAwareScope;
+    use HasAuthors;
 
     protected $casts = [
         'public_at' => 'datetime',
@@ -51,6 +51,11 @@ class Cocktail extends Model implements UploadableInterface
         return SlugOptions::create()
             ->generateSlugsFrom(['name', 'bar_id'])
             ->saveSlugsTo('slug');
+    }
+
+    public function getExternalId(): string
+    {
+        return str_replace('-' . $this->bar_id, '', $this->slug);
     }
 
     /**
@@ -275,15 +280,6 @@ class Cocktail extends Model implements UploadableInterface
         ];
     }
 
-    public function toText(): string
-    {
-        $ingredients = $this->ingredients->map(function (CocktailIngredient $cIngredient) {
-            return trim(sprintf("- \"%s\" %s %s %s", $cIngredient->ingredient->name, $cIngredient->amount, $cIngredient->units, $cIngredient->optional ? '(optional)' : ''));
-        })->join("\n");
-
-        return sprintf("%s\n%s\n\n%s\n\n%s", $this->name, e($this->description), $ingredients, e($this->instructions));
-    }
-
     public function getNextCocktail(): ?Cocktail
     {
         return $this->distinct()->where('bar_id', $this->bar_id)->orderBy('name')->limit(1)->where('name', '>', $this->name)->first();
@@ -292,5 +288,17 @@ class Cocktail extends Model implements UploadableInterface
     public function getPrevCocktail(): ?Cocktail
     {
         return $this->distinct()->where('bar_id', $this->bar_id)->orderBy('name', 'desc')->limit(1)->where('name', '<', $this->name)->first();
+    }
+
+    public function canUserMake(User $user): bool
+    {
+        $currentShelf = $user->getShelfIngredients($this->bar_id);
+        foreach ($this->ingredients as $ci) {
+            if (!$currentShelf->contains('ingredient_id', $ci->ingredient_id) && !$ci->optional) {
+                return false;
+            }
+        }
+
+        return true;
     }
 }

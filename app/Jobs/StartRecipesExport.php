@@ -4,17 +4,20 @@ namespace Kami\Cocktail\Jobs;
 
 use Illuminate\Bus\Queueable;
 use Kami\Cocktail\Models\Export;
-use Kami\Cocktail\ExportTypeEnum;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Kami\Cocktail\External\Export\Recipes;
+use Kami\Cocktail\External\ExportTypeEnum;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\Attributes\WithoutRelations;
 
 class StartRecipesExport implements ShouldQueue
 {
-    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+    use Dispatchable;
+    use InteractsWithQueue;
+    use Queueable;
+    use SerializesModels;
 
     public function __construct(
         private readonly int $barId,

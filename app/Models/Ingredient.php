@@ -19,7 +19,12 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Ingredient extends Model
 {
-    use HasFactory, Searchable, HasImages, HasSlug, HasBarAwareScope, HasAuthors;
+    use HasFactory;
+    use Searchable;
+    use HasImages;
+    use HasSlug;
+    use HasBarAwareScope;
+    use HasAuthors;
 
     protected $fillable = [
         'name',
@@ -32,6 +37,10 @@ class Ingredient extends Model
         'parent_ingredient_id',
     ];
 
+    protected $casts = [
+        'strength' => 'float',
+    ];
+
     public function getUploadPath(): string
     {
         return 'ingredients/' . $this->bar_id . '/';
@@ -42,6 +51,11 @@ class Ingredient extends Model
         return SlugOptions::create()
             ->generateSlugsFrom(['name', 'bar_id'])
             ->saveSlugsTo('slug');
+    }
+
+    public function getExternalId(): string
+    {
+        return str_replace('-' . $this->bar_id, '', $this->slug);
     }
 
     /**

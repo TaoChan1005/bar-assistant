@@ -1,3 +1,38 @@
+# v3.15.0
+## New
+- Added bar settings
+    - Currently supports `default_units` and `default_lang`
+- You can change units used in collection CSV, markdown and text share by passing query string `units` with one of the following units: `ml`, `cl`, `oz`
+- CocktailIngredient schema now includes converted and formatted values for: `ml`, `cl`, `oz`
+- Added `volume` to `Glass` schema
+- Added `volume_units` to `Glass` schema
+
+## Changes
+- Updated cocktail text share format
+
+# v3.14.0
+## New
+- Added more logging to docker runtime
+- Add POST `bars/{id}/transfer` endpoint
+    - This is used to transfer bar ownership to another user
+
+## Changes
+- Updated the way permissions are handled in when bar assistant container starts.
+    - This should improve startup/restart time after the initial setup
+- Allow scraping and ratings in demo environment
+- Hide tokens in demo environment
+
+# v3.13.2
+## Fixes
+- Fix fatal error while importing unknown JSON format as a collection
+- Fix missing unique IDs for resources with same name when creating exports
+- Target master branch
+
+# v3.13.1
+## Fixes
+- Fix fatal error while importing unknwon JSON format as a collection
+- Fix missing unique IDs for resources with same name when creating exports
+
 # v3.13.0
 ## New
 - Added `volume_ml` property to cocktail schema
@@ -12,7 +47,7 @@
 - ABV calculation now supports all standard units
 - "CocktailParty" scraper now correctly shows source ingredient string
 - Bar export files now correctly get cleaned when deleting a bar
-- Fixed recipes failing to import when ingredients where missing a category
+- Fixed recipes failing to import when ingredients were missing a category
 
 # v3.12.1
 ## Fixes
